@@ -51,12 +51,18 @@
  * A convenience wrapper for [[UIApplication sharedApplication] registerForRemoteNotificationTypes:types];
  * deprecated in iOS7
  */
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
 - (void)registerForRemoteNotificationTypes:(UIRemoteNotificationType)types;
+#pragma GCC diagnostic pop
 
 /**
  * Preferred method for registering for notifications. Backwards compatible with iOS7
  */
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
 - (void)registerForRemoteNotifications;
+#pragma GCC diagnostic pop
 
 /**
  * Register the device's token with ZeroPush

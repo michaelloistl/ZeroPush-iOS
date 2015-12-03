@@ -69,11 +69,17 @@ static NSString *const ZeroPushClientVersion = @"ZeroPush-iOS/2.1.0";
     return self;
 }
 
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
 - (void)registerForRemoteNotificationTypes:(UIRemoteNotificationType)types;
 {
     [[UIApplication sharedApplication] registerForRemoteNotificationTypes:types];
 }
+#pragma GCC diagnostic pop
 
+
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
 - (void)registerForRemoteNotifications
 {
 #ifdef __IPHONE_8_0
@@ -88,6 +94,7 @@ static NSString *const ZeroPushClientVersion = @"ZeroPush-iOS/2.1.0";
     [[UIApplication sharedApplication] registerForRemoteNotificationTypes: (UIRemoteNotificationTypeBadge | UIRemoteNotificationTypeSound | UIRemoteNotificationTypeAlert)];
 #endif
 }
+#pragma GCC diagnostic pop
 
 - (NSDictionary *)userInfoForData:(id)data andResponse:(NSHTTPURLResponse *)response
 {
