@@ -87,6 +87,7 @@ static NSString *const ZeroPushClientVersion = @"ZeroPush-iOS/2.1.0";
         UIUserNotificationSettings* notificationSettings = [UIUserNotificationSettings settingsForTypes:(UIUserNotificationTypeAlert | UIUserNotificationTypeBadge | UIUserNotificationTypeSound) categories:nil];
         [[UIApplication sharedApplication] registerUserNotificationSettings:notificationSettings];
         [[UIApplication sharedApplication] registerForRemoteNotifications];
+        NSLog(@"Did register for PN...");
     } else {
         [[UIApplication sharedApplication] registerForRemoteNotificationTypes: (UIRemoteNotificationTypeBadge | UIRemoteNotificationTypeSound | UIRemoteNotificationTypeAlert)];
     }
@@ -129,6 +130,8 @@ static NSString *const ZeroPushClientVersion = @"ZeroPush-iOS/2.1.0";
 
     NSString *url = [NSString stringWithFormat:@"%@/register", ZeroPushAPIURLHost];
 
+    NSLog(@"REGISTER PARAMETERS: %@", params);
+    
     [self HTTPRequest:@"POST"
                   url:url
                params:params
@@ -148,7 +151,9 @@ static NSString *const ZeroPushClientVersion = @"ZeroPush-iOS/2.1.0";
     
     NSString *url = [NSString stringWithFormat:@"%@/unregister", ZeroPushAPIURLHost];
 
-    [self HTTPRequest:@"DELETE"
+    NSLog(@"UNREGISTER PARAMETERS: %@", params);
+    
+    [self HTTPRequest:@"POST"
                   url:url
                params:params
         errorSelector:@selector(tokenUnregistrationDidFailWithError:)];
@@ -220,6 +225,8 @@ static NSString *const ZeroPushClientVersion = @"ZeroPush-iOS/2.1.0";
 
     NSString *url = [NSString stringWithFormat:@"%@/subscribe", ZeroPushAPIURLHost];
 
+    NSLog(@"subscribeToChannel PARAMETERS: %@", params);
+    
     [self HTTPRequest:@"POST"
                   url:url
                params:params
@@ -234,6 +241,8 @@ static NSString *const ZeroPushClientVersion = @"ZeroPush-iOS/2.1.0";
 
     NSString *url = [NSString stringWithFormat:@"%@/subscribe", ZeroPushAPIURLHost];
 
+    NSLog(@"unsubscribeFromChannel PARAMETERS: %@", params);
+    
     [self HTTPRequest:@"DELETE"
                   url:url
                params:params
@@ -315,6 +324,8 @@ static NSString *const ZeroPushClientVersion = @"ZeroPush-iOS/2.1.0";
     {
         NSString *tokenValue = [NSString stringWithFormat:@"Token token=\"%@\"", self.apiKey];
         [request setValue:tokenValue forHTTPHeaderField:@"Authorization"];
+        
+        
     }
 
     if (params != nil)
@@ -331,6 +342,8 @@ static NSString *const ZeroPushClientVersion = @"ZeroPush-iOS/2.1.0";
         [request setValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
     }
 
+    NSLog(@"REQUEST verb: %@ url: %@ parameters: %@ headers: %@", verb, url, params, request.allHTTPHeaderFields);
+    
     [NSURLConnection sendAsynchronousRequest:request
                                        queue:self.operationQueue
                            completionHandler:^(NSURLResponse *urlResponse, NSData *data, NSError *error) {
@@ -350,7 +363,7 @@ static NSString *const ZeroPushClientVersion = @"ZeroPush-iOS/2.1.0";
 -(void)HTTPRequest:(NSString *)verb url:(NSString *)url params:(NSDictionary *)params errorSelector:(SEL)errorSelector
 {
     [self HTTPRequest:verb url:url params:params completionHandler:^(NSHTTPURLResponse *response, NSData *data, NSError *error) {
-
+        
         if (![self.delegate respondsToSelector:errorSelector]) {
             if (error) {
                 NSLog(@"ZeroPush-iOS: %@", [error description]);
@@ -363,6 +376,8 @@ static NSString *const ZeroPushClientVersion = @"ZeroPush-iOS/2.1.0";
         }
         NSInteger statusCode = [response statusCode];
 
+        NSLog(@"RESPONSE statusCode: %ld verb: %@ url: %@ parameters: %@ headers: %@", (long)statusCode, verb, url, params, response.allHeaderFields);
+        
         //if 300, we need to manually follow redirects
         
         if (statusCode >= 400) {
